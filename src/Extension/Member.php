@@ -32,13 +32,13 @@ class Member extends DataExtension
 
     private static $admins_can_disable = false;
 
-    private static $validated_activation_mode = false;
+    //private static $validated_activation_mode = false;
 
     private static $totp_window = 2;
 
     public static function validated_activation_mode()
     {
-        return \Config::inst()->get(__CLASS__, 'validated_activation_mode');
+        return Config::inst()->get('SilverStripe\Security\Member', 'validated_activation_mode');
     }
 
     public function validateTOTP($token)
@@ -109,7 +109,7 @@ class Member extends DataExtension
 
         $fields->removeByName('TOTPToken');
         $fields->removeByName('BackupTokens');
-        if (!(Config::inst()->get(__CLASS__, 'admins_can_disable') && $this->owner->Has2FA && Permission::check('ADMIN'))) {
+        if (!(Config::inst()->get('SilverStripe\Security\Member', 'admins_can_disable') && $this->owner->Has2FA && Permission::check('ADMIN'))) {
             $fields->removeByName('Has2FA');
         }
     }

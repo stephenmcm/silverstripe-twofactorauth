@@ -4,6 +4,7 @@ After:
   - '#coresecurity'
 ---
 SilverStripe\Security\Member:
+  validated_activation_mode: false
   extensions:
     - _2fa\Extensions\Member
 SilverStripe\Core\Injector\Injector:

@@ -35,7 +35,7 @@ class CMSProfileController extends SS_CMSProfileController
         // cleanup
         $fields->removeByName('BackupTokens');
 
-        if(Config::inst()->get('Member', 'validated_activation_mode')){
+        if(Config::inst()->get('SilverStripe\Security\Member', 'validated_activation_mode')){
             // remove direct activation option
             $fields->removeByName('Has2FA');
 
@@ -68,6 +68,7 @@ class CMSProfileController extends SS_CMSProfileController
             );
 
         } else {
+            var_dump(Config::inst()->get('SilverStripe\Security\Member'));
             // tokens will be regenerated upon each (re)activation of 2FA, in this modus the QR is shown AFTER reactivation
             $fields->addFieldToTab('Root.TwoFactorAuthentication',
                 CheckboxField::create('Has2FA', 'Enable Two Factor Authentication', $member->Has2FA)
@@ -173,7 +174,7 @@ class CMSProfileController extends SS_CMSProfileController
         }
 
         // If we're in validated activation mode, this is the appropriate moment to refresh the token
-        if(Config::inst()->get('Member', 'validated_activation_mode') && !$member->Has2FA){
+        if(Config::inst()->get('SilverStripe\Security\Member', 'validated_activation_mode') && !$member->Has2FA){
             // set new secret/token on member
             $member->generateTOTPToken();
             $member->write();
