@@ -1,16 +1,16 @@
 <?php
 
-namespace _2fa;
+namespace _2fa\Security;
 
 use SilverStripe\Security\MemberAuthenticator\MemberAuthenticator;
 
-class CustomAuthenticator extends MemberAuthenticator
+class TwoFactorMemberAuthenticator extends MemberAuthenticator
 {
     /**
      * @inherit
      */
     public function getLoginHandler($link)
     {
-        return CustomLoginHandler::create($link, $this);
+        return TwoFactorLoginHandler::create($link, $this);
     }
 }

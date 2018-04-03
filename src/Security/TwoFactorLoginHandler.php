@@ -1,6 +1,6 @@
 <?php
 
-namespace _2fa;
+namespace _2fa\Security;
 
 use SilverStripe\Security\MemberAuthenticator\LoginHandler;
 use SilverStripe\Security\MemberAuthenticator\MemberLoginForm;
@@ -12,7 +12,7 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Dev\Debug;
 
-class CustomLoginHandler extends LoginHandler
+class TwoFactorLoginHandler extends LoginHandler
 {
 
     private static $allowed_actions = [
@@ -42,11 +42,12 @@ class CustomLoginHandler extends LoginHandler
 
     public function secondStepForm()
     {
+        // If no 2FA enabled return 2fa set up page, add extension call for this here?
         return new Form(
             $this,
             "secondStepForm",
             new FieldList(
-                new TextField('SecondFactor', 'Your 2FA (12345)')
+                new TextField('TOTP', 'Security Token')
             ),
             new FieldList(
                 new FormAction('completeSecondStep', 'Login in')
@@ -59,7 +60,7 @@ class CustomLoginHandler extends LoginHandler
         $session = $request->getSession();
         $memberID = $session->get('CustomLoginHandler.MemberID');
         $member = Member::get()->byID($memberID);
-        if ($member->validateTOTP($data['SecondFactor'])) {
+        if ($member->validateTOTP($data['TOTP'])) {
             $data = $session->get('CustomLoginHandler.Data');
             if (!$member) {
                 
@@ -73,9 +74,4 @@ class CustomLoginHandler extends LoginHandler
         // Fail to login redirects back to form
         return $this->redirectBack();
     }
-
-//    protected function checkSecondFactor($data)
-//    {
-//        return $data['SecondFactor'] === '12345';
-//    }
 }
