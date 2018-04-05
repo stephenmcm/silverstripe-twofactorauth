@@ -77,14 +77,14 @@ class Member extends DataExtension
         return $valid;
     }
 
-    public function getPrintableTOTPToken()
+    private function getPrintableTOTPToken()
     {
         $seed = $this->OTPSeed();
 
         return $seed ? $seed->getValue(Seed::FORMAT_BASE32) : '';
     }
 
-    public function OTPSeed()
+    private function OTPSeed()
     {
         if ($this->owner->TOTPToken) {
             return new Seed($this->owner->TOTPToken);
