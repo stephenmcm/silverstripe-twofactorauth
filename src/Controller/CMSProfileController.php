@@ -24,7 +24,7 @@ class CMSProfileController extends SS_CMSProfileController
     public function getEditForm($id = null, $fields = null)
     {
         $form = parent::getEditForm($id, $fields);
-        $member = Member::currentUser();
+        $member = \SilverStripe\ORM\DataObject::get_by_id(Member::class, Member::currentUserID());
         if (!$member) {
             return $form;
         }
@@ -68,7 +68,6 @@ class CMSProfileController extends SS_CMSProfileController
             );
 
         } else {
-            var_dump(Config::inst()->get('SilverStripe\Security\Member'));
             // tokens will be regenerated upon each (re)activation of 2FA, in this modus the QR is shown AFTER reactivation
             $fields->addFieldToTab('Root.TwoFactorAuthentication',
                 CheckboxField::create('Has2FA', 'Enable Two Factor Authentication', $member->Has2FA)
@@ -85,7 +84,7 @@ class CMSProfileController extends SS_CMSProfileController
 
     private function addTokenInfo(FieldList &$fields)
     {
-        $member = Member::currentUser();
+        $member = \SilverStripe\ORM\DataObject::get_by_id(Member::class, Member::currentUserID());
         if (!$member) {
             return;
         }
@@ -107,7 +106,7 @@ class CMSProfileController extends SS_CMSProfileController
 
     private function addBackupTokenInfo(FieldList &$fields, FieldList &$actions)
     {
-        $member = Member::currentUser();
+        $member = \SilverStripe\ORM\DataObject::get_by_id(Member::class, Member::currentUserID());
         if (!$member) {
             return;
         }
