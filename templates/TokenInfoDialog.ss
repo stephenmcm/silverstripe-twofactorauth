@@ -18,8 +18,8 @@
 
     <% else %>
 
-        <code class="twofactor_tokens"><pre>$PrintableTOTPToken</pre></code>
-        <img src="$generateQRCode()" width=175 height=175 />
+        <code class="twofactor_tokens"><pre>{$PrintableTOTPToken}</pre></code>
+        <img src="{$generateQRCode}" width=175 height=175 />
 
         <ol>
             <li><% _t("TWOFACTOR.SCANQRCODE", "Scan the QR code using your Two-Factor Authentication app, eg. ‘Google Authenticator’") %>

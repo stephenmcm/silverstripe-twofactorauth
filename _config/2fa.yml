@@ -4,25 +4,25 @@ After:
   - '#coresecurity'
 ---
 SilverStripe\Security\Member:
-  validated_activation_mode: false
-  extensions:
-    - _2fa\Extensions\Member
+  validated_activation_mode: true
+#  extensions:
+#    - _2fa\Extensions\Member
 SilverStripe\Core\Injector\Injector:
   SilverStripe\Security\Security:
     properties:
       Authenticators:
-        default: '%$_2fa\Security\TwoFactorMemberAuthenticator'
+        default: '%$_2fa\Authenticators\TwoFactorMemberAuthenticator'
   SilverStripe\Security\CMSSecurity:
     properties:
       Authenticators:
-        cms: '%$_2fa\Security\TwoFactorMemberAuthenticator'
-  SilverStripe\Security\ChangePasswordForm:
-    class: _2fa\ChangePasswordForm
+        cms: '%$_2fa\Authenticators\TwoFactorMemberAuthenticator'
+#  SilverStripe\Security\ChangePasswordForm:
+#    class: _2fa\ChangePasswordForm
   SilverStripe\Admin\CMSProfileController:
     class: _2fa\CMSProfileController
-SilverStripe\Security\CMSSecurity:
-  reauth_enabled: false
-
+#SilverStripe\Security\CMSSecurity:
+#  reauth_enabled: false
+#
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
     - twofactorauth/css/twofactorstyles.css
