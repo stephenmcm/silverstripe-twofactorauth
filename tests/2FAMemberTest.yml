@@ -11,6 +11,7 @@
 'SilverStripe\Security\Group':
   admins:
     Title: Administrators
+    Require2FA: true
     Permissions: '=>SilverStripe\Security\Permission.admin'
   cmsusers:
     Title: CMS Users

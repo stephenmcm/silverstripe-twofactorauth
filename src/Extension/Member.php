@@ -2,12 +2,13 @@
 
 namespace _2fa\Extensions;
 
-use Rych\OTP\Seed;
-use Rych\OTP\TOTP;
+use OTPHP\TOTP;
 use _2fa\BackupToken;
 use _2fa\Authenticator;
 use Endroid\QrCode\QrCode;
+use ParagonIE\ConstantTime\Hex;
 use SilverStripe\Forms\FieldList;
+use ParagonIE\ConstantTime\Base32;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Security\Permission;
@@ -40,9 +41,9 @@ class Member extends DataExtension
             return false;
         }
         $window = (int) Config::inst()->get(Authenticator::class, 'totp_window');
-        $totp = new TOTP($seed, array('window' => $window));
+        $totp = TOTP::create($seed);
 
-        $valid = $totp->validate($token);
+        $valid = $totp->verify($token);
 
         // Check backup tokens if unsuccessful
         if (!$valid) {
@@ -63,13 +64,18 @@ class Member extends DataExtension
     {
         $seed = $this->OTPSeed();
 
-        return $seed ? $seed->getValue(Seed::FORMAT_BASE32) : '';
+        return $seed ? $seed : '';
     }
 
     private function OTPSeed()
     {
         if ($this->owner->TOTPToken) {
-            return new Seed($this->owner->TOTPToken);
+            $seed = $this->owner->TOTPToken;
+            if (preg_match('/^[0-9a-f]+$/i', $seed)) {
+                $seed = Hex::decode($this->owner->TOTPToken);
+                $seed = trim(Base32::encodeUpper($seed), '=');
+            }
+            return $seed;
         }
 
         return;
@@ -109,8 +115,8 @@ class Member extends DataExtension
 
     public function generateTOTPToken($bytes = 20)
     {
-        $seed = Seed::generate($bytes);
-        $this->owner->TOTPToken = $seed->getValue(Seed::FORMAT_HEX);
+        $seed = trim(Base32::encodeUpper(random_bytes(20)), '=');
+        $this->owner->TOTPToken = $seed;
     }
 
     /**
@@ -166,7 +172,7 @@ class Member extends DataExtension
     }
 
     /**
-     * Checks whether any of the member's Groups requrie to 2FA to log in
+     * Checks whether any of the member's Groups require to 2FA to log in
      *
      * @return boolean
      */
