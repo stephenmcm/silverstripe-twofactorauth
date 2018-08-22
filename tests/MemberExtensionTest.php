@@ -1,9 +1,9 @@
 <?php
 namespace _2fa;
 
-use SilverStripe\Dev\FunctionalTest;
+use OTPHP\TOTP;
 use SilverStripe\Security\Member;
-use Rych\OTP\TOTP;
+use SilverStripe\Dev\FunctionalTest;
 
 class MemberExtensionTest extends FunctionalTest
 {
@@ -82,8 +82,6 @@ class MemberExtensionTest extends FunctionalTest
 
     public function genetrateOTP($TOTPToken)
     {
-        $totp    = new TOTP($TOTPToken, array('window' => $this->totp_window));
-        $current = max(0, time() - intval(floor($this->totp_window / 2)));
-        return $totp->calculate($current);
+        return TOTP::create($TOTPToken)->now();
     }
 }
